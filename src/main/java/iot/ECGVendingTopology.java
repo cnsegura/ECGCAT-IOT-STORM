@@ -19,6 +19,8 @@ import storm.kafka.trident.TransactionalTridentKafkaSpout;
 import storm.kafka.trident.TridentKafkaConfig;
 import storm.trident.Stream;
 import storm.trident.TridentTopology;
+import storm.trident.operation.Filter;
+import storm.trident.operation.builtin.FilterNull;
 
 public class ECGVendingTopology {
 	private static long STORM_KAFKA_READ_FROM_START = -2;
@@ -32,13 +34,14 @@ public class ECGVendingTopology {
 		//spoutConf.startOffsetTime = readFromMode;
 		//spoutConf.scheme = new SchemeAsMultiScheme(new StringScheme());
 		Fields jsonFields = new Fields("Created", "TemperatureinF", "Pressureinmb");
-		ExtractTemp eT = new ExtractTemp(85F);
+		float eT = (85F);
 		
 		TridentTopology topology = new TridentTopology();
 		topology
 			.newStream("records", spout)
-			.each(new Fields("str"), new JsonProject(jsonFields), jsonFields);
-			//.each(new Fields("str"), new ExtractTemp(), new Fields())
+			.each(new Fields("str"), new JsonProject(jsonFields), jsonFields)
+			.each(new Fields("TemperatureinF"), new FilterNull())
+			.each(new Fields("TemperatureinF"), new ExtractTemp(eT), new Fields())
 		;
 		
 		return topology.build();
