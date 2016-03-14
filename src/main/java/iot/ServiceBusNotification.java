@@ -18,12 +18,16 @@ import javax.xml.datatype.*;
 //This class sends a message to Azure Service Bus.
 public class ServiceBusNotification extends BaseFunction {
 	
-	Configuration config = ServiceBusConfiguration.configureWithSASAuthentication("ecgcat-iot-servicebus", "RootManageSharedAccessKey", "WMOWbISHCy+EkplmooMGQSUuo0ONa/ALPXh6jhSWFto=", ".servicebus.windows.net");
-	ServiceBusContract service = ServiceBusService.create(config);
-	TopicInfo topicInfo = new TopicInfo("TempData");
+	//Configuration config = ServiceBusConfiguration.configureWithSASAuthentication("ecgcat-iot-servicebus", "RootManageSharedAccessKey", "WMOWbISHCy+EkplmooMGQSUuo0ONa/ALPXh6jhSWFto=", ".servicebus.windows.net");
+	//ServiceBusContract service = ServiceBusService.create(config);
+	//TopicInfo topicInfo = new TopicInfo("TempData");
 	
 	@Override
 	public void execute(TridentTuple tple, TridentCollector collector) {
+		//for debug
+		System.out.println("in service bus");
+						
+		/*
 		try {
 			GetTopicResult getTopic = service.getTopic("TempData");
 			BrokeredMessage message = new BrokeredMessage("Temperature Out of Range");
@@ -39,7 +43,7 @@ public class ServiceBusNotification extends BaseFunction {
 			}
 			
 		}
-		
+		*/
 	}
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
     	// this bolt does not emit anything
