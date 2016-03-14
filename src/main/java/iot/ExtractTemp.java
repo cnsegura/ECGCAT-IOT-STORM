@@ -34,7 +34,4 @@ public class ExtractTemp extends BaseFunction {
     	collector.emit(new Values(stateChange,threshold));
     }
     
-    public void declareOutputFields(OutputFieldsDeclarer declarer) {
-    	// this bolt does not emit anything
-    }
 }
