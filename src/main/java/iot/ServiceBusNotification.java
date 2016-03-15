@@ -2,6 +2,7 @@ package iot;
 
 import storm.trident.operation.BaseFunction;
 import storm.trident.operation.TridentCollector;
+import storm.trident.operation.TridentOperationContext;
 import storm.trident.tuple.TridentTuple;
 
 import com.microsoft.windowsazure.services.servicebus.*;
@@ -25,25 +26,26 @@ public class ServiceBusNotification extends BaseFunction {
 	private ServiceBusContract service;
 	private TopicInfo topicInfo;
 	
-	public void prepare(Map conf, TopologyContext context) {
-		config = ServiceBusConfiguration.configureWithSASAuthentication("ecgcat-iot-servicebus", "RootManageSharedAccessKey", "INSERTKEYHERE", ".servicebus.windows.net");
-		service = ServiceBusService.create(config);
-		//TopicInfo topicInfo = new TopicInfo("tempdata");
+	public void prepare(Map conf, TridentOperationContext context) {
+		this.config = ServiceBusConfiguration.configureWithSASAuthentication("ecgcat-iot-servicebus", "RootManageSharedAccessKey", "INSERTKEYHERE", ".servicebus.windows.net");
+		this.service = ServiceBusService.create(config);
 	}
 	
 	@Override
-	public void execute(TridentTuple tple, TridentCollector collector) {
+	public void execute(TridentTuple tuple, TridentCollector collector) {
 		//for debug
+		System.out.println("in service bus");
 		
 		BrokeredMessage message = new BrokeredMessage("Temperature");
 		try {
-			System.out.println("in service bus");
-			service.sendTopicMessage("tempdata", message);
+			
+			this.service.sendMessage("tempdata", message);
+			System.exit(0);
 		} catch (ServiceException e) {
 			System.out.println("send data bombed");
 			//e.printStackTrace();
 		}
-
+		
 	}
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
     	// this bolt does not emit anything
