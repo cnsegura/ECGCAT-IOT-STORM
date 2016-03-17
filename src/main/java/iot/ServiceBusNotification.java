@@ -8,17 +8,13 @@ import storm.trident.tuple.TridentTuple;
 import com.microsoft.windowsazure.services.servicebus.*;
 import com.microsoft.windowsazure.services.servicebus.models.*;
 
-import backtype.storm.task.TopologyContext;
 import backtype.storm.topology.OutputFieldsDeclarer;
 
 import com.microsoft.windowsazure.Configuration;
-import com.microsoft.windowsazure.core.*;
 //import com.microsoft.windowsazure.exception.ServiceException;
 import com.microsoft.windowsazure.exception.ServiceException;
 
 import java.util.Map;
-
-import javax.xml.datatype.*;
 
 //This class sends a message to Azure Service Bus.
 public class ServiceBusNotification extends BaseFunction {
@@ -27,8 +23,8 @@ public class ServiceBusNotification extends BaseFunction {
 	private TopicInfo topicInfo;
 	
 	public void prepare(Map conf, TridentOperationContext context) {
-		this.config = ServiceBusConfiguration.configureWithSASAuthentication("ecgcat-iot-servicebus", "RootManageSharedAccessKey", "INSERTKEYHERE", ".servicebus.windows.net");
-		this.service = ServiceBusService.create(config);
+		config = ServiceBusConfiguration.configureWithSASAuthentication("ecgcat-iot-servicebus", "RootManageSharedAccessKey", "INSERTKEYHERE", ".servicebus.windows.net");
+		service = ServiceBusService.create(config);
 	}
 	
 	@Override
@@ -36,11 +32,11 @@ public class ServiceBusNotification extends BaseFunction {
 		//for debug
 		System.out.println("in service bus");
 		
-		BrokeredMessage message = new BrokeredMessage("Temperature");
+		BrokeredMessage message = new BrokeredMessage("Temperature at or above 85F.");
 		try {
 			
-			this.service.sendMessage("tempdata", message);
-			System.exit(0);
+			service.sendMessage("tempdata", message);
+			//System.exit(0);
 		} catch (ServiceException e) {
 			System.out.println("send data bombed");
 			//e.printStackTrace();
