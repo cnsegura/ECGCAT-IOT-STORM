@@ -17,19 +17,28 @@ public class ExtractTemp extends BaseFunction {
     }
     
     private State last = State.BELOW;
-    private float threshold;
+    private double threshold;
     
-    public ExtractTemp(float threshold) {
+    public ExtractTemp(double threshold) {
     	this.threshold = threshold;
     }
     @Override
     public void execute(TridentTuple tuple, TridentCollector collector) {
-    	float val = tuple.getFloat(1); //select the Temp from stream
+    	
+    	
+    	//code below for working on "offline" mode
+    	//String strTemp = tuple.getString(0);
+    	//float val = Float.parseFloat(strTemp);
+    	
+    	//code below for working on real data
+    	double val = tuple.getDouble(0); //select the Temp from stream
+    	
+    	//evaluate state
     	State newState = val < this.threshold ? State.BELOW : State.ABOVE;
     	boolean stateChange = this.last != newState;
     	
     	//for debug
-    	//System.out.println(value1);
+    	System.out.println(val);
     	
     	collector.emit(new Values(stateChange,threshold));
     }

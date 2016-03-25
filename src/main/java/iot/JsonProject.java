@@ -29,7 +29,7 @@ public class JsonProject extends BaseFunction {
 			values.add(map.get(this.fields.get(i)));
 		}
 		//for debug
-		System.out.println(values);
+		//System.out.println(values);
 		
 		collector.emit(values);
 	}

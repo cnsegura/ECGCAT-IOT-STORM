@@ -41,9 +41,11 @@ public class ECGVendingTopology {
 			.newStream("records", spout)
 			.each(new Fields("str"), new JsonProject(jsonFields), jsonFields)
 			.each(new Fields("TemperatureinF"), new FilterNull())
-			.each(new Fields("TemperatureinF"), new ExtractTemp(eT), new Fields())
+			.each(new Fields("TemperatureinF"), new ExtractTemp(eT), new Fields("change", "threshold"))
+			.each(new Fields("change"), new BooleanFilter())
+			.each(new Fields("change"), new ServiceBusNotification(), new Fields())
+			
 		;
-		
 		return topology.build();
 	}
 	
@@ -52,6 +54,17 @@ public class ECGVendingTopology {
 		
 		if(args.length == 1 && args[0].equals("--fromCurrent")) {
 			readFromMode = STORM_KAFKA_READ_FROM_CURRENT_OFFSET;
+			
+	        BrokerHosts hosts = new ZkHosts("localhost:2181");
+	        TridentKafkaConfig kafkaConfig = new TridentKafkaConfig(hosts, "SensorData");
+	        kafkaConfig.startOffsetTime = readFromMode;
+	        kafkaConfig.scheme = new SchemeAsMultiScheme(new StringScheme());
+	        OpaqueTridentKafkaSpout kafkaSpout = new OpaqueTridentKafkaSpout(kafkaConfig);
+	        LocalCluster cluster = new LocalCluster();
+	        cluster.submitTopology("ECGVending", conf, buildTopology(kafkaSpout));
+	        
+	        //For debug
+			//System.out.println("argument caught");
 		}
         if (args.length == 0) {
 			

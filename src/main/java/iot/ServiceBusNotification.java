@@ -23,14 +23,14 @@ public class ServiceBusNotification extends BaseFunction {
 	private TopicInfo topicInfo;
 	
 	public void prepare(Map conf, TridentOperationContext context) {
-		config = ServiceBusConfiguration.configureWithSASAuthentication("ecgcat-iot-servicebus", "RootManageSharedAccessKey", "INSERTKEYHERE", ".servicebus.windows.net");
+		config = ServiceBusConfiguration.configureWithSASAuthentication("ecgcat-iot-servicebus", "RootManageSharedAccessKey", "iuEWgYcf7XS7Egkwx/7mMOafeyuGHaZGYSkPvOrwZnw=", ".servicebus.windows.net");
 		service = ServiceBusService.create(config);
 	}
 	
 	@Override
 	public void execute(TridentTuple tuple, TridentCollector collector) {
 		//for debug
-		System.out.println("in service bus");
+		//System.out.println("in service bus");
 		
 		BrokeredMessage message = new BrokeredMessage("Temperature at or above 85F.");
 		try {
